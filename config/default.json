@@ -1,0 +1,4 @@
+{
+    "mongoUri": "mongodb+srv://bulbul:test123456@cluster0-cvpzn.mongodb.net/test?retryWrites=true&w=majority",
+    "jwtSecret": "mySecret"
+}
