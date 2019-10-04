@@ -8,34 +8,29 @@ const mongoose = require('mongoose');
 // @desc    Get all movies
 // @access  Private
 
-router.get('/', async (req, res) => {
-  // try {
-  //   await Movie.findOne({ title: 'ek tha tiger' }).populate('actors').exec((err, data) => {
-  //     console.log(data)
-  //   })
-  // } catch (err) {
-  //   console.error(err.message);
-  //   res.status(500).send('Server Error');
-  // }
-  Movie.findOne({ title: 'Hello' })
-    .populate('actors')
-    .then(data => console.log(data))
-    .catch(err => console.log(err));
+router.get('/', auth, async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ title: 'Hello' }).populate('actors');
+    res.json(movie);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
 });
 
 // @Route   POST api/movies
 // @desc    post movies
 // @access  Private
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { title, year, rating, actors } = req.body;
   const actorsName = actors.split(',');
   const actoresPromises = actorsName.map(actor =>
-    Actor.findOne({ name: RegExp(actor.trim(),'i') },"_id")
+    Actor.findOne({ name: RegExp(actor.trim(), 'i') }, '_id')
   );
   let actorsArray = await Promise.all(actoresPromises);
-  actorsArray = actorsArray.filter(actor=>actor !==null);
-  
+  actorsArray = actorsArray.filter(actor => actor !== null);
+
   movie = new Movie({ title, year, rating, actors: actorsArray });
   try {
     await movie.save();
