@@ -79,10 +79,9 @@ router.post(
     check('username', 'Username is required')
       .not()
       .isEmpty(),
-    check(
-      'password',
-      'Password is required'
-    ).not().isEmpty()
+    check('password', 'Password is required')
+      .not()
+      .isEmpty()
   ],
   async (req, res) => {
     // validation
@@ -96,18 +95,14 @@ router.post(
     try {
       let user = await User.findOne({ username });
       if (!user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'User not found!' }] });
+        return res.status(400).json({ errors: [{ msg: 'User not found!' }] });
       }
 
-      
-
       // Decrypt password
-      const isMatch = await bcrypt.compare(password, user.password)
+      const isMatch = await bcrypt.compare(password, user.password);
 
-      if(!isMatch){
-        res.status(400).json({ msg: 'Invalid password!' })
+      if (!isMatch) {
+        res.status(400).json({ msg: 'Invalid password!' });
       }
 
       // return jsonwebtoken
